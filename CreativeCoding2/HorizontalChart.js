@@ -49,7 +49,7 @@ class HorizontalChart {
     push();
     translate(this.posX, this.posY);
     this.drawTicks();
-    this.drawHorizontalLines();
+    this.drawVerticalLines();
     this.drawRects();
     this.drawAxis();
     this.drawTitle();
@@ -98,7 +98,7 @@ class HorizontalChart {
     }
   }
 
-  drawHorizontalLines() {
+  drawVerticalLines() {
     for (let i = 0; i <= this.numTicks; i++) {
       //vertical line
       stroke(255, 50);

@@ -21,10 +21,10 @@ class StackedChart {
     this.rotateLabels = true;
 
     this.colors = [
-      color("#ffe066"),
-      color("#fab666"),
-      color("#f68f6a"),
-      color("#f3646a"),
+      color("#FF0000"),
+      color("#FF9200"),
+      color("#FFEB00"),
+      color("#3FFF00"),
     ];
 
     this.updateValues();
@@ -33,9 +33,10 @@ class StackedChart {
 
   updateValues() {
     this.tickSpacing = this.chartHeight / this.numTicks;
-    this.availableWidth =
-      this.chartWidth - this.margin * 2 - this.spacing * (this.data.length - 1);
+    this.availableWidth = this.chartWidth - this.margin * 2 - this.spacing * (this.data.length - 1);
+    this.availableHeight = this.chartHeight - this.margin * 2 - this.spacing * (this.data.length - 1);
     this.barWidth = this.availableWidth / this.data.length;
+    this.barHeight = this.availableHeight / this.data.length;
   }
 
   calculateMaxValue() {
@@ -112,31 +113,33 @@ class StackedChart {
     push();
     translate(this.margin, 0);
     for (let i = 0; i < this.data.length; i++) {
-      let colorNumber = i % 4;
-
-      //bars
-
-      for (let j = 0; j < this.data[i].total[j].length; j++) {
+      //Stacked Bars
+      push();
+      for (let j = 0; j < this.data[i].values.length; j++) {
+        let colorNumber = j % this.colors.length;
         fill(this.colors[colorNumber]);
         noStroke();
         rect(
           (this.barWidth + this.spacing) * i,
           0,
           this.barWidth,
-          this.scaleData(-this.data[i].total[j])
+          -this.scaleData(this.data[i].values[j])
         );
-
-        //numbers (text)
-        noStroke();
-        fill(255);
-        textSize(16);
-        textAlign(CENTER, BOTTOM);
-        text(
-          this.data[i].total,
-          (this.barWidth + this.spacing) * i + this.barWidth / 2,
-          this.scaleData(-this.data[i].total[j])
-        );
+        translate(0, -this.scaleData(this.data[i].values[j]));
       }
+      pop();
+
+      //numbers (text)
+      noStroke();
+      fill(255);
+      textSize(10);
+      textAlign(CENTER, BOTTOM);
+      text(
+        this.data[i].total,
+        (this.barWidth + this.spacing) * i + this.barWidth / 2,
+        this.scaleData(-this.data[i].total)
+      );
+
       //text
       if (this.showLabels) {
         if (this.rotateLabels) {
